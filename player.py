@@ -9,28 +9,29 @@ class Player(pygame.sprite.Sprite):
     self.rect.centery = 650
 
     self.speed = 10
+    self.maxJump = 1
     self.jump = 0
-    self.up = 20
-    self.down = 0
+    self.pressKey_UP = False
+    self.resetJump()
   
   def update(self):
     self.keyInput()
 
-    if self.jump == True:
-      if self.up >= 0:
+    if 1 <= self.jump <= self.maxJump:
+      if self.up > 0:
         self.rect.centery -= self.up
         self.up -= 2
       else:
-        self.jump = 2
+        self.isDown = True
 
-    if self.jump == 2 and self.rect.centery < 650:
+    if self.isDown == True and self.rect.centery < 650:
       self.rect.centery += self.down
       self.down += 2
-    elif self.rect.centery >= 650:
+    elif self.isDown == True and self.rect.centery >= 650:
       self.rect.centery = 650
-      self.jump = False
-      self.up = 20
-      self.down = 0
+      self.jump = 0
+      self.pressKey_UP = False
+      self.resetJump()
   
   def keyInput(self):
     key = pygame.key.get_pressed()
@@ -39,5 +40,15 @@ class Player(pygame.sprite.Sprite):
       self.rect.centerx -= self.speed
     if key[pygame.K_RIGHT] and self.rect.centerx < 600 - self.image.get_width() / 2:
       self.rect.centerx += self.speed
-    if key[pygame.K_UP] and self.jump == 0:
-      self.jump = 1
+
+    if key[pygame.K_UP] == False:
+      self.pressKey_UP = False
+    if key[pygame.K_UP] and self.jump < self.maxJump and self.pressKey_UP == False:
+      self.pressKey_UP = True
+      self.jump += 1
+      self.resetJump()
+  
+  def resetJump(self):
+    self.up = 15
+    self.down = 0
+    self.isDown = False

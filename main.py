@@ -19,12 +19,11 @@ def main():
   clock = pygame.time.Clock()
 
   AllGroup = pygame.sprite.RenderUpdates()
-  Player.containers = AllGroup
-
-  player = Player()
+  AllGroup.add(Player())
 
   background = pygame.image.load("images/background.png")
   screen.blit(background, (0, 0))
+  pygame.display.flip()
 
   going = True
   while going:
@@ -38,7 +37,11 @@ def main():
         if event.key == pygame.K_F2:
           screen = pygame.display.set_mode((600, 800))
 
-    pygame.display.update()
+    AllGroup.clear(screen, background)
+    AllGroup.update()
+    dirty = AllGroup.draw(screen)
+
+    pygame.display.update(dirty)
     clock.tick(30)
 
 
