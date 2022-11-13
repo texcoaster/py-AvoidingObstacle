@@ -1,13 +1,12 @@
 import pygame
 
 from player import *
-from arrow import *
+from obstacle import *
 
 
 tmr = 0
 index = 0
 
-SCREENRECT = pygame.Rect(0, 0, 600, 800)
 bg_img = pygame.image.load("images/background.png")
 
 def main():
