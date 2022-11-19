@@ -49,6 +49,6 @@ class Player(pygame.sprite.Sprite):
       self.resetJump()
   
   def resetJump(self):
-    self.up = 15
+    self.up = 16
     self.down = 0
     self.isDown = False

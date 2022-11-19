@@ -1,6 +1,7 @@
 import pygame
 
 from player import *
+from obstacleController import *
 from obstacle import *
 
 
@@ -19,6 +20,7 @@ def main():
 
   AllGroup = pygame.sprite.RenderUpdates()
   AllGroup.add(Player())
+  AllGroup.add(ObstacleController())
 
   background = pygame.image.load("images/background.png")
   screen.blit(background, (0, 0))
