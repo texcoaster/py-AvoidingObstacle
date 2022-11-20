@@ -18,9 +18,14 @@ def main():
   screen = pygame.display.set_mode((600, 800))
   clock = pygame.time.Clock()
 
+  player = Player()
+
+  arrows = pygame.sprite.Group()
+  arrow2s = pygame.sprite.Group()
   AllGroup = pygame.sprite.RenderUpdates()
-  AllGroup.add(Player())
-  AllGroup.add(ObstacleController())
+  AllGroup.add(player)
+
+  obstacleController = ObstacleController()
 
   background = pygame.image.load("images/background.png")
   screen.blit(background, (0, 0))
@@ -40,7 +45,23 @@ def main():
 
     AllGroup.clear(screen, background)
     AllGroup.update()
+
+    receive = obstacleController.send()
+    if receive != None:
+      obstacle = Obstacle(receive)
+      AllGroup.add(obstacle)
+      if obstacle.type == "arrow":
+        arrows.add(obstacle)
+      if obstacle.type == "arrow2":
+        arrow2s.add(obstacle)
+
+    if pygame.sprite.spritecollide(player, arrows, True):
+      player.heart -= 1
+    if pygame.sprite.spritecollide(player, arrow2s, True):
+      player.heart -= 2
+
     dirty = AllGroup.draw(screen)
+
 
     pygame.display.update(dirty)
     clock.tick(30)

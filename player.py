@@ -8,6 +8,7 @@ class Player(pygame.sprite.Sprite):
     self.rect.centerx = 300
     self.rect.centery = 650
 
+    self.heart = 5
     self.speed = 10
     self.maxJump = 1
     self.jump = 0
@@ -32,6 +33,9 @@ class Player(pygame.sprite.Sprite):
       self.jump = 0
       self.pressKey_UP = False
       self.resetJump()
+    
+    if self.heart <= 0:
+      self.kill()
   
   def keyInput(self):
     key = pygame.key.get_pressed()
