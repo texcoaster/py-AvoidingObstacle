@@ -3,12 +3,14 @@ import pygame
 from player import *
 from obstacleController import *
 from obstacle import *
+from ground import *
 
 
 tmr = 0
 index = 0
 
 bg_img = pygame.image.load("images/background.png")
+
 
 def main():
   global tmr, index
@@ -18,18 +20,21 @@ def main():
   screen = pygame.display.set_mode((600, 800))
   clock = pygame.time.Clock()
 
-  player = Player()
+  background = pygame.image.load("images/background.png")
+  screen.blit(background, (0, 0))
+  pygame.display.flip()
 
+  player = Player()
+  obstacleController = ObstacleController()
+  ground = Ground()
+
+  obstacles = pygame.sprite.Group()
   arrows = pygame.sprite.Group()
   arrow2s = pygame.sprite.Group()
   AllGroup = pygame.sprite.RenderUpdates()
   AllGroup.add(player)
+  AllGroup.add(ground)
 
-  obstacleController = ObstacleController()
-
-  background = pygame.image.load("images/background.png")
-  screen.blit(background, (0, 0))
-  pygame.display.flip()
 
   going = True
   while going:
@@ -44,17 +49,21 @@ def main():
           screen = pygame.display.set_mode((600, 800))
 
     AllGroup.clear(screen, background)
-    AllGroup.update()
 
+    obstacleController.update()
     receive = obstacleController.send()
-    if receive != None:
-      obstacle = Obstacle(receive)
+    for i in range(len(receive)):
+      obstacle = Obstacle(receive[i])
       AllGroup.add(obstacle)
+      obstacles.add(obstacle)
       if obstacle.type == "arrow":
         arrows.add(obstacle)
       if obstacle.type == "arrow2":
         arrow2s.add(obstacle)
+        
+    AllGroup.update()
 
+    pygame.sprite.spritecollide(ground, obstacles, True)
     if pygame.sprite.spritecollide(player, arrows, True):
       player.heart -= 1
     if pygame.sprite.spritecollide(player, arrow2s, True):

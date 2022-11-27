@@ -16,6 +16,4 @@ class Obstacle(pygame.sprite.Sprite):
     self.speed = 10
   
   def update(self):
-    if self.rect.centery >= 650:
-      self.kill()
     self.rect.centery += self.speed

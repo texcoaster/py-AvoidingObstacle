@@ -16,11 +16,14 @@ class ObstacleController():
       "fist",
     ]
   
-  def send(self):
+  def update(self):
     self.tmr += 1
+  
+  def send(self):
+    send = []
 
     if self.tmr % self.random == 0:
       self.random = random.randint(20, 40)
-      return self.images[random.randint(0, 1)]
-    else:
-      return None
+      send.append(self.images[random.randint(0, 1)])
+    
+    return send
