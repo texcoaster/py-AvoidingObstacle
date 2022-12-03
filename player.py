@@ -40,14 +40,14 @@ class Player(pygame.sprite.Sprite):
   def keyInput(self):
     key = pygame.key.get_pressed()
 
-    if key[pygame.K_LEFT] and self.rect.centerx > 0 + self.image.get_width() / 2:
+    if (key[pygame.K_LEFT] or key[pygame.K_a]) and self.rect.centerx > 0 + self.image.get_width() / 2:
       self.rect.centerx -= self.speed
-    if key[pygame.K_RIGHT] and self.rect.centerx < 600 - self.image.get_width() / 2:
+    if (key[pygame.K_RIGHT] or key[pygame.K_d]) and self.rect.centerx < 600 - self.image.get_width() / 2:
       self.rect.centerx += self.speed
 
-    if key[pygame.K_UP] == False:
+    if key[pygame.K_UP] == False or key[pygame.K_w] == False:
       self.pressKey_UP = False
-    if key[pygame.K_UP] and self.jump < self.maxJump and self.pressKey_UP == False:
+    if (key[pygame.K_UP] or key[pygame.K_w]) and self.jump < self.maxJump and self.pressKey_UP == False:
       self.pressKey_UP = True
       self.jump += 1
       self.resetJump()

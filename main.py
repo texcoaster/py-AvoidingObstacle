@@ -3,6 +3,7 @@ import pygame
 from player import *
 from obstacleController import *
 from obstacle import *
+from heart import *
 from ground import *
 
 
@@ -26,6 +27,7 @@ def main():
 
   player = Player()
   obstacleController = ObstacleController()
+  heart = Heart()
   ground = Ground()
 
   obstacles = pygame.sprite.Group()
@@ -33,6 +35,7 @@ def main():
   arrow2s = pygame.sprite.Group()
   AllGroup = pygame.sprite.RenderUpdates()
   AllGroup.add(player)
+  AllGroup.add(heart)
   AllGroup.add(ground)
 
 
@@ -60,16 +63,17 @@ def main():
         arrows.add(obstacle)
       if obstacle.type == "arrow2":
         arrow2s.add(obstacle)
-        
+
+    heart.setPlayerHeart(player.heart)
+
     AllGroup.update()
+    dirty = AllGroup.draw(screen)
 
     pygame.sprite.spritecollide(ground, obstacles, True)
     if pygame.sprite.spritecollide(player, arrows, True):
       player.heart -= 1
     if pygame.sprite.spritecollide(player, arrow2s, True):
       player.heart -= 2
-
-    dirty = AllGroup.draw(screen)
 
 
     pygame.display.update(dirty)

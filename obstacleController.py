@@ -3,7 +3,7 @@ import random
 
 from obstacle import *
 
-class ObstacleController():
+class ObstacleController:
   def __init__(self):
     super().__init__()
     self.tmr = 0
