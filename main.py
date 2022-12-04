@@ -25,17 +25,21 @@ def main():
   screen.blit(background, (0, 0))
   pygame.display.flip()
 
-  player = Player()
-  obstacleController = ObstacleController()
-  heart = Heart()
-  ground = Ground()
-
   obstacles = pygame.sprite.Group()
   arrows = pygame.sprite.Group()
   arrow2s = pygame.sprite.Group()
+  hearts = pygame.sprite.Group()
   AllGroup = pygame.sprite.RenderUpdates()
+
+  player = Player()
+  obstacleController = ObstacleController()
+  ground = Ground()
+  for i in range(5):
+    heart = Heart(player, i)
+    hearts.add(heart)
+    AllGroup.add(heart)
+
   AllGroup.add(player)
-  AllGroup.add(heart)
   AllGroup.add(ground)
 
 
@@ -63,8 +67,6 @@ def main():
         arrows.add(obstacle)
       if obstacle.type == "arrow2":
         arrow2s.add(obstacle)
-
-    heart.setPlayerHeart(player.heart)
 
     AllGroup.update()
     dirty = AllGroup.draw(screen)
