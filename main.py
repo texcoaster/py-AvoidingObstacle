@@ -3,18 +3,19 @@ import pygame
 from player import *
 from obstacleController import *
 from obstacle import *
+from bomb2 import *
+from expolusion import *
 from heart import *
 from ground import *
 
 
 tmr = 0
 index = 0
-
-bg_img = pygame.image.load("images/background.png")
+bomb2 = 0
 
 
 def main():
-  global tmr, index
+  global tmr, index, bomb2
 
   pygame.init()
   pygame.display.set_caption("AvodingArrow")
@@ -28,6 +29,8 @@ def main():
   obstacles = pygame.sprite.Group()
   arrows = pygame.sprite.Group()
   arrow2s = pygame.sprite.Group()
+  bombs = pygame.sprite.Group()
+  bomb2s = pygame.sprite.Group()
   hearts = pygame.sprite.Group()
   AllGroup = pygame.sprite.RenderUpdates()
 
@@ -57,6 +60,9 @@ def main():
 
     AllGroup.clear(screen, background)
 
+    if bomb2 > 0:
+      bomb2 -= 1
+
     obstacleController.update()
     receive = obstacleController.send()
     for i in range(len(receive)):
@@ -67,15 +73,43 @@ def main():
         arrows.add(obstacle)
       if obstacle.type == "arrow2":
         arrow2s.add(obstacle)
+      if obstacle.type == "bomb":
+        bombs.add(obstacle)
+
+    key = pygame.key.get_pressed()
+    if key[pygame.K_SPACE] and bomb2 == 0:
+      bomb2 = 3 * 30
+      bomb = Bomb2()
+      AllGroup.add(bomb)
+      bomb2s.add(bomb)
 
     AllGroup.update()
-    dirty = AllGroup.draw(screen)
 
-    pygame.sprite.spritecollide(ground, obstacles, True)
     if pygame.sprite.spritecollide(player, arrows, True):
       player.heart -= 1
     if pygame.sprite.spritecollide(player, arrow2s, True):
       player.heart -= 2
+    if pygame.sprite.spritecollide(player, bombs, False):
+      player.heart -= 3
+      AllGroup.add(Expolusion(0, bombs.sprites()[0].rect.centerx, bombs.sprites()[0].rect.centery))
+      bombs.sprites()[0].kill()
+    if pygame.sprite.spritecollide(ground, bomb2s, True):
+      obstacleController.bomb2 = 45
+      AllGroup.add(Expolusion(1, 300, 435))
+      for i in range(len(obstacles.sprites())):
+        obstacles.sprites()[0].kill()
+      for i in range(len(arrows.sprites())):
+        arrows.sprites()[0].kill()
+      for i in range(len(arrow2s.sprites())):
+        arrow2s.sprites()[0].kill()
+      for i in range(len(bombs.sprites())):
+        bombs.sprites()[0].kill()
+    if pygame.sprite.spritecollide(ground, bombs, False):
+      AllGroup.add(Expolusion(0, bombs.sprites()[0].rect.centerx, bombs.sprites()[0].rect.centery))
+      bombs.sprites()[0].kill()
+    pygame.sprite.spritecollide(ground, obstacles, True)
+
+    dirty = AllGroup.draw(screen)
 
 
     pygame.display.update(dirty)

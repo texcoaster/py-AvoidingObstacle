@@ -6,24 +6,37 @@ from obstacle import *
 class ObstacleController:
   def __init__(self):
     super().__init__()
-    self.tmr = 0
-    self.random = random.randint(20, 40)
+    self.arrowsTmr = 0
+    self.bombsTmr = 0
+    self.arrowsRandom = random.randint(10, 30)
+    self.bombsRandom = random.randint(180, 240)
+    self.bomb2 = 0
 
-    self.images = [
+    self.types = [
       "arrow", "arrow2",
-      "bomb", "bomb2",
-      "bullet",
-      "fist",
+      "bomb", "bullet", "fist"
     ]
   
   def update(self):
-    self.tmr += 1
-  
+    self.arrowsTmr += 1
+    self.bombsTmr += 1
+
   def send(self):
     send = []
 
-    if self.tmr % self.random == 0:
-      self.random = random.randint(20, 40)
-      send.append(self.images[random.randint(0, 1)])
+    if self.bomb2 > 0:
+      self.bomb2 -= 1
+
+    if self.bomb2 == 0:
+
+      if self.arrowsTmr % self.arrowsRandom == 0:
+        self.arrowsTmr = 0
+        self.arrowsRandom = random.randint(10, 30)
+        send.append(self.types[random.randint(0, 1)])
+
+      if self.bombsTmr % self.bombsRandom == 0:
+        self.bombsTmr = 0
+        self.bombsRandom = random.randint(180, 240)
+        send.append(self.types[2])
     
     return send
