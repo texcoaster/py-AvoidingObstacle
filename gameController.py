@@ -3,23 +3,27 @@ import random
 
 from obstacle import *
 
-class ObstacleController:
+class GameController:
   def __init__(self):
     super().__init__()
     self.arrowsTmr = 0
     self.bombsTmr = 0
+    self.heartTmr = 0
     self.arrowsRandom = random.randint(10, 30)
     self.bombsRandom = random.randint(180, 240)
+    self.heartRandom = random.randint(90, 210)
     self.bomb2 = 0
 
     self.types = [
       "arrow", "arrow2",
-      "bomb", "bullet", "fist"
+      "bomb", "bullet", "fist",
+      "plusHeart", "minusHeart"
     ]
   
   def update(self):
     self.arrowsTmr += 1
     self.bombsTmr += 1
+    self.heartTmr += 1
 
   def send(self):
     send = []
@@ -36,7 +40,17 @@ class ObstacleController:
 
       if self.bombsTmr % self.bombsRandom == 0:
         self.bombsTmr = 0
-        self.bombsRandom = random.randint(180, 240)
+        self.bombsRandom = random.randint(150, 210)
         send.append(self.types[2])
+
+      if self.heartTmr % self.heartRandom == 0:
+        self.heartTmr = 0
+        self.heartRandom = random.randint(90, 210)
+        
+        heartNum = random.randint(1, 10)
+        if heartNum < 8:
+          send.append(self.types[6])
+        else:
+          send.append(self.types[5])
     
     return send

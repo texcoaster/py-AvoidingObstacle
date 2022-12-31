@@ -1,12 +1,15 @@
 import pygame
+import random
 
 from player import *
-from obstacleController import *
+from gameController import *
 from obstacle import *
 from bomb2 import *
 from expolusion import *
 from heart import *
 from ground import *
+from plusHeart import *
+from minusHeart import *
 
 
 tmr = 0
@@ -32,10 +35,12 @@ def main():
   bombs = pygame.sprite.Group()
   bomb2s = pygame.sprite.Group()
   hearts = pygame.sprite.Group()
+  plusHearts = pygame.sprite.Group()
+  minusHearts = pygame.sprite.Group()
   AllGroup = pygame.sprite.RenderUpdates()
 
   player = Player()
-  obstacleController = ObstacleController()
+  gameController = GameController()
   ground = Ground()
   for i in range(5):
     heart = Heart(player, i)
@@ -63,18 +68,28 @@ def main():
     if bomb2 > 0:
       bomb2 -= 1
 
-    obstacleController.update()
-    receive = obstacleController.send()
+    gameController.update()
+    receive = gameController.send()
     for i in range(len(receive)):
-      obstacle = Obstacle(receive[i])
-      AllGroup.add(obstacle)
-      obstacles.add(obstacle)
-      if obstacle.type == "arrow":
-        arrows.add(obstacle)
-      if obstacle.type == "arrow2":
-        arrow2s.add(obstacle)
-      if obstacle.type == "bomb":
-        bombs.add(obstacle)
+      if receive[i] != "plusHeart" and receive[i] != "minusHeart":
+        obstacle = Obstacle(receive[i])
+        AllGroup.add(obstacle)
+        obstacles.add(obstacle)
+        if obstacle.type == "arrow":
+          arrows.add(obstacle)
+        if obstacle.type == "arrow2":
+          arrow2s.add(obstacle)
+        if obstacle.type == "bomb":
+          bombs.add(obstacle)
+      else:
+        if receive[i] == "plusHeart":
+          plusHeart = PlusHeart()
+          AllGroup.add(plusHeart)
+          plusHearts.add(plusHeart)
+        if receive[i] == "minusHeart":
+          minusHeart = MinusHeart()
+          AllGroup.add(minusHeart)
+          minusHearts.add(minusHeart)
 
     key = pygame.key.get_pressed()
     if key[pygame.K_SPACE] and bomb2 == 0:
@@ -93,8 +108,14 @@ def main():
       player.heart -= 3
       AllGroup.add(Expolusion(0, bombs.sprites()[0].rect.centerx, bombs.sprites()[0].rect.centery))
       bombs.sprites()[0].kill()
+    if pygame.sprite.spritecollide(player, plusHearts, True):
+      if player.heart < 5:
+        player.heart += 1
+    if pygame.sprite.spritecollide(player, minusHearts, True):
+      player.heart -= 1
+
     if pygame.sprite.spritecollide(ground, bomb2s, True):
-      obstacleController.bomb2 = 45
+      gameController.bomb2 = 45
       AllGroup.add(Expolusion(1, 300, 435))
       for i in range(len(obstacles.sprites())):
         obstacles.sprites()[0].kill()
@@ -104,9 +125,23 @@ def main():
         arrow2s.sprites()[0].kill()
       for i in range(len(bombs.sprites())):
         bombs.sprites()[0].kill()
+      for i in range(len(plusHearts.sprites())):
+        plusHearts.sprites()[0].kill()
+      for i in range(len(minusHearts.sprites())):
+        minusHearts.sprites()[0].kill()
+
     if pygame.sprite.spritecollide(ground, bombs, False):
       AllGroup.add(Expolusion(0, bombs.sprites()[0].rect.centerx, bombs.sprites()[0].rect.centery))
       bombs.sprites()[0].kill()
+    if pygame.sprite.spritecollide(ground, plusHearts, False):
+      for i in range(len(plusHearts.sprites())):
+        if plusHearts.sprites()[i].dropGround == False:
+          plusHearts.sprites()[i].dropGround = True
+    if pygame.sprite.spritecollide(ground, minusHearts, False):
+      for i in range(len(minusHearts.sprites())):
+        if minusHearts.sprites()[i].dropGround == False:
+          minusHearts.sprites()[i].dropGround = True
+
     pygame.sprite.spritecollide(ground, obstacles, True)
 
     dirty = AllGroup.draw(screen)
