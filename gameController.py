@@ -11,7 +11,7 @@ class GameController:
     self.heartTmr = 0
     self.arrowsRandom = random.randint(10, 30)
     self.bombsRandom = random.randint(180, 240)
-    self.heartRandom = random.randint(90, 210)
+    self.heartRandom = random.randint(30, 45)
     self.bomb2 = 0
 
     self.types = [
@@ -45,7 +45,7 @@ class GameController:
 
       if self.heartTmr % self.heartRandom == 0:
         self.heartTmr = 0
-        self.heartRandom = random.randint(90, 210)
+        self.heartRandom = random.randint(60, 105)
         
         heartNum = random.randint(1, 10)
         if heartNum < 8:

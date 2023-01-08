@@ -19,4 +19,4 @@ class PlusHeart(pygame.sprite.Sprite):
       else:
         self.tmr -= 1
     else:
-      self.rect.centery += 10
+      self.rect.centery += 15

@@ -37,11 +37,14 @@ def main():
   hearts = pygame.sprite.Group()
   plusHearts = pygame.sprite.Group()
   minusHearts = pygame.sprite.Group()
+  expolusions = pygame.sprite.Group()
+  grounds = pygame.sprite.Group()
   AllGroup = pygame.sprite.RenderUpdates()
 
   player = Player()
   gameController = GameController()
   ground = Ground()
+  grounds.add(ground)
   for i in range(5):
     heart = Heart(player, i)
     hearts.add(heart)
@@ -102,17 +105,23 @@ def main():
 
     if pygame.sprite.spritecollide(player, arrows, True):
       player.heart -= 1
+      player.hurt()
     if pygame.sprite.spritecollide(player, arrow2s, True):
       player.heart -= 2
+      player.hurt()
     if pygame.sprite.spritecollide(player, bombs, False):
       player.heart -= 3
-      AllGroup.add(Expolusion(0, bombs.sprites()[0].rect.centerx, bombs.sprites()[0].rect.centery))
+      player.hurt()
+      expolusion = Expolusion(0, bombs.sprites()[0].rect.centerx, bombs.sprites()[0].rect.centery)
+      AllGroup.add(expolusion)
+      expolusions.add(expolusion)
       bombs.sprites()[0].kill()
     if pygame.sprite.spritecollide(player, plusHearts, True):
       if player.heart < 5:
         player.heart += 1
     if pygame.sprite.spritecollide(player, minusHearts, True):
       player.heart -= 1
+      player.hurt()
 
     if pygame.sprite.spritecollide(ground, bomb2s, True):
       gameController.bomb2 = 45
@@ -131,17 +140,19 @@ def main():
         minusHearts.sprites()[0].kill()
 
     if pygame.sprite.spritecollide(ground, bombs, False):
-      AllGroup.add(Expolusion(0, bombs.sprites()[0].rect.centerx, bombs.sprites()[0].rect.centery))
+      expolusion = Expolusion(0, bombs.sprites()[0].rect.centerx, bombs.sprites()[0].rect.centery)
+      AllGroup.add(expolusion)
+      expolusions.add(expolusion)
       bombs.sprites()[0].kill()
-    if pygame.sprite.spritecollide(ground, plusHearts, False):
-      for i in range(len(plusHearts.sprites())):
-        if plusHearts.sprites()[i].dropGround == False:
-          plusHearts.sprites()[i].dropGround = True
-    if pygame.sprite.spritecollide(ground, minusHearts, False):
-      for i in range(len(minusHearts.sprites())):
-        if minusHearts.sprites()[i].dropGround == False:
-          minusHearts.sprites()[i].dropGround = True
+    for i in range(len(plusHearts.sprites())):
+      if pygame.sprite.spritecollide(plusHearts.sprites()[i], grounds, False):
+        plusHearts.sprites()[i].dropGround = True
+    for i in range(len(minusHearts.sprites())):
+      if pygame.sprite.spritecollide(minusHearts.sprites()[i], grounds, False):
+        minusHearts.sprites()[i].dropGround = True
 
+    pygame.sprite.groupcollide(expolusions, plusHearts, False, True)
+    pygame.sprite.groupcollide(expolusions, minusHearts, False, True)
     pygame.sprite.spritecollide(ground, obstacles, True)
 
     dirty = AllGroup.draw(screen)
