@@ -10,15 +10,18 @@ from heart import *
 from ground import *
 from plusHeart import *
 from minusHeart import *
+from shield import *
 
 
 tmr = 0
 index = 0
-bomb2 = 0
+bomb2Tmr = 0
+shieldTmr = 0
+isShield = False
 
 
 def main():
-  global tmr, index, bomb2
+  global tmr, index, bomb2Tmr, shieldTmr, isShield
 
   pygame.init()
   pygame.display.set_caption("AvodingArrow")
@@ -68,8 +71,10 @@ def main():
 
     AllGroup.clear(screen, background)
 
-    if bomb2 > 0:
-      bomb2 -= 1
+    if bomb2Tmr > 0:
+      bomb2Tmr -= 1
+    if shieldTmr > 0:
+      shieldTmr -= 1
 
     gameController.update()
     receive = gameController.send()
@@ -95,11 +100,16 @@ def main():
           minusHearts.add(minusHeart)
 
     key = pygame.key.get_pressed()
-    if key[pygame.K_SPACE] and bomb2 == 0:
-      bomb2 = 3 * 30
+    if key[pygame.K_b] and bomb2Tmr == 0:
+      bomb2Tmr = 30 * 30
       bomb = Bomb2()
       AllGroup.add(bomb)
       bomb2s.add(bomb)
+    if key[pygame.K_n] and shieldTmr == 0:
+      shieldTmr = 30 * 20
+      isShield = True
+      shield = Shield(player)
+      AllGroup.add(shield)
 
     AllGroup.update()
 
@@ -117,6 +127,7 @@ def main():
       expolusions.add(expolusion)
       bombs.sprites()[0].kill()
     if pygame.sprite.spritecollide(player, plusHearts, True):
+      player.health()
       if player.heart < 5:
         player.heart += 1
     if pygame.sprite.spritecollide(player, minusHearts, True):
@@ -151,6 +162,7 @@ def main():
       if pygame.sprite.spritecollide(minusHearts.sprites()[i], grounds, False):
         minusHearts.sprites()[i].dropGround = True
 
+    if isShield: pygame.sprite.spritecollide(shield, obstacles, True)
     pygame.sprite.groupcollide(expolusions, plusHearts, False, True)
     pygame.sprite.groupcollide(expolusions, minusHearts, False, True)
     pygame.sprite.spritecollide(ground, obstacles, True)

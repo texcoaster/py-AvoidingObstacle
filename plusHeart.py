@@ -9,7 +9,7 @@ class PlusHeart(pygame.sprite.Sprite):
     self.rect.centerx = random.randint(0, 600)
     self.rect.centery = -100
     
-    self.tmr = 150
+    self.tmr = 90
     self.dropGround = False
 
   def update(self):
@@ -19,4 +19,4 @@ class PlusHeart(pygame.sprite.Sprite):
       else:
         self.tmr -= 1
     else:
-      self.rect.centery += 15
+      self.rect.centery += 20

@@ -47,8 +47,8 @@ class GameController:
         self.heartTmr = 0
         self.heartRandom = random.randint(60, 105)
         
-        heartNum = random.randint(1, 10)
-        if heartNum < 8:
+        heartNum = random.randint(1, 100)
+        if heartNum <= 75:
           send.append(self.types[6])
         else:
           send.append(self.types[5])

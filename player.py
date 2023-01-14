@@ -65,10 +65,16 @@ class Player(pygame.sprite.Sprite):
       self.resetJump()
   
   def hurt(self):
+    self.hurtTmr = 0
     self.isHurt = True
     self.image = pygame.image.load("images/player2.png")
     self.rect.centerx -= 5
     self.rect.centery -= 5
+
+  def health(self):
+    self.hurtTmr = 0
+    self.isHurt = True
+    self.image = pygame.image.load("images/player3.png")
 
   def resetJump(self):
     self.up = 18
