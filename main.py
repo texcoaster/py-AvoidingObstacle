@@ -41,7 +41,9 @@ def main():
   plusHearts = pygame.sprite.Group()
   minusHearts = pygame.sprite.Group()
   expolusions = pygame.sprite.Group()
+  bullets = pygame.sprite.Group()
   grounds = pygame.sprite.Group()
+  shields = pygame.sprite.Group()
   AllGroup = pygame.sprite.RenderUpdates()
 
   player = Player()
@@ -77,6 +79,7 @@ def main():
       shieldTmr -= 1
 
     gameController.update()
+
     receive = gameController.send()
     for i in range(len(receive)):
       if receive[i] != "plusHeart" and receive[i] != "minusHeart":
@@ -89,6 +92,8 @@ def main():
           arrow2s.add(obstacle)
         if obstacle.type == "bomb":
           bombs.add(obstacle)
+        if obstacle.type == "bullet":
+          bullets.add(obstacle)
       else:
         if receive[i] == "plusHeart":
           plusHeart = PlusHeart()
@@ -110,6 +115,7 @@ def main():
       isShield = True
       shield = Shield(player)
       AllGroup.add(shield)
+      shields.add(shield)
 
     AllGroup.update()
 
@@ -126,6 +132,9 @@ def main():
       AllGroup.add(expolusion)
       expolusions.add(expolusion)
       bombs.sprites()[0].kill()
+    if pygame.sprite.spritecollide(player, bullets, True):
+      player.heart -= 1
+      player.hurt()
     if pygame.sprite.spritecollide(player, plusHearts, True):
       player.health()
       if player.heart < 5:
@@ -162,7 +171,8 @@ def main():
       if pygame.sprite.spritecollide(minusHearts.sprites()[i], grounds, False):
         minusHearts.sprites()[i].dropGround = True
 
-    if isShield: pygame.sprite.spritecollide(shield, obstacles, True)
+    if not len(shields.sprites()) == 0:
+      pygame.sprite.spritecollide(shield, obstacles, True)
     pygame.sprite.groupcollide(expolusions, plusHearts, False, True)
     pygame.sprite.groupcollide(expolusions, minusHearts, False, True)
     pygame.sprite.spritecollide(ground, obstacles, True)

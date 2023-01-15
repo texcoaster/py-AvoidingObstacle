@@ -9,7 +9,7 @@ class MinusHeart(pygame.sprite.Sprite):
     self.rect.centerx = random.randint(0, 600)
     self.rect.centery = -100
     
-    self.tmr = 150
+    self.tmr = 90
     self.dropGround = False
 
   def update(self):
