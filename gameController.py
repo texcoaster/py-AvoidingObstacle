@@ -10,17 +10,19 @@ class GameController:
     self.bombsTmr = 0
     self.heartTmr = 0
     self.bulletTmr = 0
+    self.laserTmr = 0
 
     self.arrowsRandom = random.randint(10, 30)
     self.bombsRandom = random.randint(180, 240)
     self.heartRandom = random.randint(30, 45)
     self.bulletRandom = random.randint(30, 60)
+    self.laserRandom = random.randint(150, 300)
 
     self.bomb2 = 0
 
     self.types = [
       "arrow", "arrow2",
-      "bomb", "bullet", "fist",
+      "bomb", "bullet", "fist", "laser",
       "plusHeart", "minusHeart"
     ]
   
@@ -29,6 +31,7 @@ class GameController:
     self.bombsTmr += 1
     self.heartTmr += 1
     self.bulletTmr += 1
+    self.laserTmr += 1
 
   def send(self):
     send = []
@@ -52,6 +55,11 @@ class GameController:
         self.bulletTmr = 0
         self.bulletRandom = random.randint(50, 100)
         send.append(self.types[3])
+      
+      if self.laserTmr % self.laserRandom == 0:
+        self.laserTmr = 0
+        self.laserRandom = random.randint(210, 360)
+        send.append(self.types[5])
 
       if self.heartTmr % self.heartRandom == 0:
         self.heartTmr = 0
@@ -59,8 +67,8 @@ class GameController:
         
         heartNum = random.randint(1, 100)
         if heartNum <= 50:
-          send.append(self.types[6])
+          send.append(self.types[7])
         else:
-          send.append(self.types[5])
+          send.append(self.types[6])
     
     return send
